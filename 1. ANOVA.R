@@ -7,7 +7,7 @@ if(!require(dplyr)) install.packages("dplyr")
 library(dplyr)
 if(!require(psych)) install.packages("psych") 
 library(psych)
-#Teste de Levene para verificar homogeidade dos desvios-padr„o
+#Teste de Levene para verificar homogeidade dos desvios-padr√£o
 if(!require(lawstat)) install.packages("lawstat") 
 library(lawstat)
 if(!require(car)) install.packages("car") 
@@ -37,44 +37,44 @@ boxplot(volume ~ grupo, dados)
 dados_av <- aov (volume ~ grupo, dados) #ANOVA
 dados_av
 summary(dados_av) #Tabela de analise de variancia - ANOVA
-dados_av$coef #Mostra os coeficientes estimados do modelo que s„o mÈdias e desvios de mÈdias
-#O primeiro coeficiente È a mÈdia do grupo 1
-#O segundo coeficiente mais o primeiro È a mÈdia do grupo 2
-#O mesmo vale para o terceiro coeficiente para a mÈdia do grupo 3
-dados_av$res  #Mostra os resÌduos do modelo -> os valores observados menos as mÈdias
-#Os resÌduos s„o ˙teis para verificar a adequaÁ„o da an·lise via ANOVA
-#O valor-p=0,052 somente È v·lido se as suposiÁıes forem confirmadas
+dados_av$coef #Mostra os coeficientes estimados do modelo que s√£o m√©dias e desvios de m√©dias
+#O primeiro coeficiente √© a m√©dia do grupo 1
+#O segundo coeficiente mais o primeiro √© a m√©dia do grupo 2
+#O mesmo vale para o terceiro coeficiente para a m√©dia do grupo 3
+dados_av$res  #Mostra os res√≠duos do modelo -> os valores observados menos as m√©dias
+#Os res√≠duos s√£o √∫teis para verificar a adequa√ß√£o da an√°lise via ANOVA
+#O valor-p=0,052 somente √© v√°lido se as suposi√ß√µes forem confirmadas
 
 
-#SuposiÁıes do modelo
+#Suposi√ß√µes do modelo
 #A homogeneidade dos dp pode ser verificada pelo Teste de Bartlett ou de Levene (melhor)
 bartlett.test(dados$volume, dados$grupo)
 levene.test(dados$volume, dados$grupo)
 leveneTest(volume ~ grupo, dados, center=median)
-#Ambos testes mostram n„o haver evidÍncia contra a hipÛtese de homocedasticidade
-#Os resÌduos tambÈm podem ser utilizados para verificar as suposiÁıes
+#Ambos testes mostram n√£o haver evid√™ncia contra a hip√≥tese de homocedasticidade
+#Os res√≠duos tamb√©m podem ser utilizados para verificar as suposi√ß√µes
 
-#O teste de Shapiro-Wilks verifica a normalidade nos resÌduos
+#O teste de Shapiro-Wilks verifica a normalidade nos res√≠duos
 shapiro.test(residuals(dados_av))
 
 #Grafico dos residuos
 plot(dados_av)
-par(mfrow=c(2,2)) #colocando os quatro gr·ficos na tela
+par(mfrow=c(2,2)) #colocando os quatro gr√°ficos na tela
 plot(dados_av)
 par(mfrow=c(1,1))
-#O primeiro (e o terceiro) mostrando faixas de mesma dispers„o atestam a adequaÁ„o da homocedasticidade
-#A linha vermelha nestes gr·ficos deve ser horizontal se a suposiÁ„o de homocedasticidade for verdadeira
-#E o segundo gr·fico, mostrando os pontos em torno da reta, atestam a adequaÁ„o da normalidade
-#O quarto gr·fico È usado para identificar possÌveis observaÁıes atÌpicas (outleirs)
+#O primeiro (e o terceiro) mostrando faixas de mesma dispers√£o atestam a adequa√ß√£o da homocedasticidade
+#A linha vermelha nestes gr√°ficos deve ser horizontal se a suposi√ß√£o de homocedasticidade for verdadeira
+#E o segundo gr√°fico, mostrando os pontos em torno da reta, atestam a adequa√ß√£o da normalidade
+#O quarto gr√°fico √© usado para identificar poss√≠veis observa√ß√µes at√≠picas (outleirs)
 
 
-#Como as suposiÁıes foram atendidads, nÛs dizemos que existem diferenÁa entre os grupos ao nÌvel de 10%
-#Portanto, necessitamos de comparaÁıes m˙ltiplas para encontrar quais grupos s„o diferentes e quais s„o iguais
-#Vamos utilizar os mÈtodos de Bonferroni e Tukey
+#Como as suposi√ß√µes foram atendidads, n√≥s dizemos que existem diferen√ßa entre os grupos ao n√≠vel de 10%
+#Portanto, necessitamos de compara√ß√µes m√∫ltiplas para encontrar quais grupos s√£o diferentes e quais s√£o iguais
+#Vamos utilizar os m√©todos de Bonferroni e Tukey
 pairwise.t.test(dados$volume, dados$grupo, p.adj = "bonf")
-pairwise.t.test(dados$volume, dados$grupo, p.adj = "holm") # MÈtodo de Holm
+pairwise.t.test(dados$volume, dados$grupo, p.adj = "holm") # M√©todo de Holm
 dados_tu <- TukeyHSD(dados_av,conf.level=0.90)
 plot(dados_tu)
 dados_tu
-#Concluimos que existe diferenÁa mÈdia de 0,4 litros (IC 95%; 0,056 e 0,76) entre o grupo 2 (Rancho Los Amigos) 
-#e 1 (John Hopkins). E n„o existe evidÍncia de diferenÁa entre os grupos.
+#Concluimos que existe diferen√ßa m√©dia de 0,4 litros (IC 95%; 0,056 e 0,76) entre o grupo 2 (Rancho Los Amigos) 
+#e 1 (John Hopkins). E n√£o existe evid√™ncia de diferen√ßa entre os grupos.

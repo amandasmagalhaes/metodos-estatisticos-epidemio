@@ -1,10 +1,10 @@
-#Análise de Variância (ANOVA) - PROJETO 1
+#AnÃ¡lise de VariÃ¢ncia (ANOVA) - PROJETO 1
 
 
 
-#Testar a hipótese de que a dosagem da hemoglobina glicosilada (HbA)
-#é igual entre os três grupos: Gestantes Normais (1),
-#Gestantes com tolerância diminuida (2) e Gestantes diabéticas (3).
+#Testar a hipÃ³tese de que a dosagem da hemoglobina glicosilada (HbA)
+#Ã© igual entre os trÃªs grupos: Gestantes Normais (1),
+#Gestantes com tolerÃ¢ncia diminuida (2) e Gestantes diabÃ©ticas (3).
 
 
 #Pacotes
@@ -12,7 +12,7 @@ if(!require(dplyr)) install.packages("dplyr")
 library(dplyr)
 if(!require(psych)) install.packages("psych")
 library(psych)
-#Teste de Levene para verificar homogeidade dos desvios-padrão
+#Teste de Levene para verificar homogeidade dos desvios-padrÃ£o
 if(!require(lawstat)) install.packages("lawstat")
 library(lawstat)
 if(!require(car)) install.packages("car")
@@ -24,7 +24,7 @@ dados <- read.table("http://www.est.ufmg.br/~enricoc/pdf/avancados_medicina/dado
                     head=T)
 
 
-#Visualização
+#VisualizaÃ§Ã£o
 View(dados)
 glimpse(dados) #Dplyr
 colnames(dados)
@@ -33,53 +33,53 @@ dados$Grupo <- factor(dados$Grupo) #Transforma int em fac
 glimpse(dados) #Dplyr
 
 
-#Análise descritiva
-describe(dados) #Psych #Média global Hba
+#AnÃ¡lise descritiva
+describe(dados) #Psych #MÃ©dia global Hba
 describeBy(dados$Hba, group = dados$Grupo) #Psych #Estratificado
 dados$Grupo <- factor(dados$Grupo, levels=c("1","2","3"), labels=c("N", "TD", "D"))
 boxplot(Hba ~ Grupo, dados) #Boxplot
-#Grupo 3 tem média/mediana superior
+#Grupo 3 tem mÃ©dia/mediana superior
 
 
-#Análise de variância
+#AnÃ¡lise de variÃ¢ncia
 dados_av <- aov (Hba ~ grupos, dados) #ANOVA
 dados_av
-summary(dados_av) #Tabela de análise de variância
-#Mostra que as diferenças entre as médias são significativas
-dados_av$coef #Mostra os coeficientes estimados do modelo que são médias e desvios de médias
-#O primeiro coeficiente é a média do grupo 1
-#O segundo coeficiente mais o primeiro é a média do grupo 2
-#O mesmo vale para o terceiro coeficiente para a média do grupo 3
-dados_av$res  #Mostra os resíduos do modelo -> os valores observados menos as médias
-#Os resíduos são úteis para verificar a adequação da análise via ANOVA
-#O valor-p somente é válido se as suposições forem confirmadas
+summary(dados_av) #Tabela de anÃ¡lise de variÃ¢ncia
+#Mostra que as diferenÃ§as entre as mÃ©dias sÃ£o significativas
+dados_av$coef #Mostra os coeficientes estimados do modelo que sÃ£o mÃ©dias e desvios de mÃ©dias
+#O primeiro coeficiente Ã© a mÃ©dia do grupo 1
+#O segundo coeficiente mais o primeiro Ã© a mÃ©dia do grupo 2
+#O mesmo vale para o terceiro coeficiente para a mÃ©dia do grupo 3
+dados_av$res  #Mostra os resÃ­duos do modelo -> os valores observados menos as mÃ©dias
+#Os resÃ­duos sÃ£o Ãºteis para verificar a adequaÃ§Ã£o da anÃ¡lise via ANOVA
+#O valor-p somente Ã© vÃ¡lido se as suposiÃ§Ãµes forem confirmadas
 
 
-#Suposições do modelo
+#SuposiÃ§Ãµes do modelo
 
 #A homogeneidade dos dp pode ser verificada pelo Teste de Bartlett 
 #ou de Levene (melhor)
 bartlett.test(dados$Hba, dados$Grupo)
 leveneTest(Hba ~ Grupo, dados, center=median)
-#Não há uma diferença entre as variâncias
-#Ambos testes mostram não haver evidência contra a hipótese de homocedasticidade
-#Os resíduos também podem ser utilizados para verificar as suposições
+#NÃ£o hÃ¡ uma diferenÃ§a entre as variÃ¢ncias
+#Ambos testes mostram nÃ£o haver evidÃªncia contra a hipÃ³tese de homocedasticidade
+#Os resÃ­duos tambÃ©m podem ser utilizados para verificar as suposiÃ§Ãµes
 
-#O teste de Shapiro-Wilks verifica a normalidade nos resíduos
+#O teste de Shapiro-Wilks verifica a normalidade nos resÃ­duos
 shapiro.test(residuals(dados_av))
 
 #Grafico dos residuos
 plot(dados_av)
-par(mfrow=c(2,2)) #colocando os quatro gráficos na tela
+par(mfrow=c(2,2)) #colocando os quatro grÃ¡ficos na tela
 plot(dados_av)
 par(mfrow=c(1,1))
-#A linha vermelha nestes gráficos deve ser horizontal se a suposição de homocedasticidade for verdadeira;
-#O segundo gráfico, mostrando os pontos em torno da reta, atestam a adequação da normalidade;
-#O quarto gráfico é usado para identificar possíveis observações atípicas (outleirs)
+#A linha vermelha nestes grÃ¡ficos deve ser horizontal se a suposiÃ§Ã£o de homocedasticidade for verdadeira;
+#O segundo grÃ¡fico, mostrando os pontos em torno da reta, atestam a adequaÃ§Ã£o da normalidade;
+#O quarto grÃ¡fico Ã© usado para identificar possÃ­veis observaÃ§Ãµes atÃ­picas (outleirs)
 
-#Como as suposições foram atendidads, nós dizemos que existem diferença entre os grupos ao nível de 0,5%.
-#Portanto, necessitamos de comparações múltiplas para encontrar quais grupos são diferentes e quais são iguais
-#Vamos utilizar os métodos de Bonferroni e Tukey
+#Como as suposiÃ§Ãµes foram atendidads, nÃ³s dizemos que existem diferenÃ§a entre os grupos ao nÃ­vel de 0,5%.
+#Portanto, necessitamos de comparaÃ§Ãµes mÃºltiplas para encontrar quais grupos sÃ£o diferentes e quais sÃ£o iguais
+#Vamos utilizar os mÃ©todos de Bonferroni e Tukey
 pairwise.t.test(dados$Hba, dados$Grupo, p.adj = "bonf") #Metodo de Bonf
 pairwise.t.test(dados$Hba, dados$Grupo, p.adj = "holm") #Metodo de Holm
 dados_tu <- TukeyHSD(dados_av,conf.level=0.95)
