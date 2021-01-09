@@ -26,14 +26,14 @@ describe(dados)
 
 # Gráfico de Disperção
 plot(dados$idade, dados$pio, xlab = "Idade", ylab = "PIO")
-#O gráfico de dispersÃ£o indica uma possível correlação positiva entre as variéveis
+#O gráfico de dispersão indica uma possível correlação positiva entre as variéveis
 #Ou seja, os mais velhos estão associados com valores de PIO mais altos
 
 
 # Correlação entre PIO e Idade
 cor.test(dados$idade, dados$pio) #teste e IC para \rho
 #Mede a força de uma associação (linear)
-#Ao nível de 5% há fortes evidência de que p é diferente de zero
+#Ao nível de 5% há fortes evidências de que p é diferente de zero
 #Coeficiente de correlação de Pearson foi de 0,84 (IC; 95% 0,68; 0,93)
 #0,84 é verdadeiro ou é so um variação amostral?
 #Testar hipotese que não existe associação
@@ -42,11 +42,11 @@ cor.test(dados$idade, dados$pio) #teste e IC para \rho
 # Modelo de Regressão Linear Simples
 mod <- lm(pio ~ idade, dados) #ajuste do modelo de regressão linear simples
 summary(mod) #teste t para beta
-#Qualidade do ajuste por meio do quadrado do coeficiente de correlaçao de Pearson
+#Qualidade do ajuste por meio do quadrado do coeficiente de correlação de Pearson
 #R2 = 0,71 = 71% da variação dos dados está sendo explicada pela reta de regressão
 #O aumento em ano na idade, aumenta a PIO média em 0,23 (IC; 95% 0,17; 0,29) mmHg. 
 #Ou o aumento em quatro anos na idade, aumenta a PIO média em cerca de 1 mmHg (IC; 95% 0,68; 1,16) mmHg.
-
+#Teste F: o modelo criado está prevendo melhor que um modelo sem previsor nenhum (VI).
 
 # Gráfico da reta ajustada
 par(mfrow=c(1,1))
@@ -76,14 +76,19 @@ boxplot(mod$resid)
 # Teste de Normalidade
 shapiro.test(mod$residuals)
 
+# Outliers nos resíduos - -3+3
+summary(rstandard(mod))
+
+# Independência dos resíduos (Durbin-Watson) - Análise Longitudinal
+durbinWatsonTest(mod) 
 
 # Teste de Homocedasticidade
 #Um teste simples para verificar variância não-constante.
 #Este teste não é completamente correto pois algum peso deve ser utilizado 
 #e os graus de liberdade ajustados. Veja Faraway (2004)
 summary(lm(abs(residuals(mod))~fitted(mod)))
-
-
+# Homocedasticidade (Breusch-Pagan)
+bptest(mod)
 #Conclusão: existe uma leve evidência de heterocedasticidade mas não foi significativa. 
 #Uma possível razão desta violação é a presença de um valor atípico 
 #(indivíduo 25 do banco de dados, 77 anos e 22 mmHg de PIO).
@@ -104,8 +109,8 @@ ggplot(data = dados, mapping = aes(x = idade, y = pio)) +
 # Conclusão Final:
 #Existe uma forte evidência de associação (linear) entre idade e PIO.
 #Coeficiente de correlação de Pearson foi de 0,84 (IC; 95% 0,68; 0,93) e o R2 = 71%.
-#O aumento em ano na idade, aumenta a PIO média em 0,23 (IC; 95% 0,17; 0,29) mmHg. 
-#Ou o aumento em quatro anos na idade, aumenta a PIO mÃ©dia em cerca de 1 mmHg (IC; 95% 0,68; 1,16) mmHg.
+#O aumento em um ano na idade, aumenta a PIO média em 0,23 (IC; 95% 0,17; 0,29) mmHg. 
+#Ou o aumento em quatro anos na idade, aumenta a PIO média em cerca de 1 mmHg (IC; 95% 0,68; 1,16) mmHg.
 
 
 
@@ -121,10 +126,10 @@ plot(mod1, which=c(1:4), add.smooth=T,pch=20)
 shapiro.test(mod1$residuals)
 summary(lm(abs(residuals(mod1))~fitted(mod1)))
 #Observe que a qualidade do ajuste melhorou em todos os aspectos.
-# A conclusã£o continua mostrando uma associação entre PIO e idade. 
+# A conclusão continua mostrando uma associação entre PIO e idade. 
 # No entanto, observe que beta^ passou de 0,23 para 0,27.
 
-# 2- Modelar também a dispersÃ£o
+# 2- Modelar também a dispersão
 #Como existe uma leve evidência contra a suposição de homocedasticidade
 #vamos modelar também o desvio-padrão do erro em função de idade. 
 #Ou seja, vamos testar se a dispersão aumenta com o aumento da idade.
