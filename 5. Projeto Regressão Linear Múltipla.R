@@ -268,7 +268,7 @@ confint(modClassificação)
 
 # Regressão Multivariada
 mod1 <- lm(BIA ~ Idade+I(Idade^2) + Pregas+I(Pregas^2) + Conicidade + 
-            CinturaEstatura + Percentil + Sexo, dados)
+             CinturaEstatura + Percentil + Sexo, dados)
 summary(mod1)
 
 
