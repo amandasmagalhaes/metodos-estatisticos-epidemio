@@ -322,7 +322,7 @@ par(mfrow=c(2, 2))
 plot(mod4, which=c(1:4), pch=16, add.smooth=T)
 
 par(mfrow=c(1,1))
-boxplot(modPREGAS$resid)
+boxplot(mod4$resid)
 
 
 #Teste de Normalidade
